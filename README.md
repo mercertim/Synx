@@ -13,8 +13,9 @@ minimap2 (v2.24) https://github.com/lh3/minimap2 (for alignment of ONT data, not
 
 samtools (using htslib v1.9) http://www.htslib.org/
 
-Dependencies Python:
+jellyfish (v2.3.0) https://github.com/gmarcais/Jellyfish
 
+Dependencies Python:
 pip install pysamstats (v1.1.2)
 
 ## Demo
@@ -27,22 +28,31 @@ cd Synx
 
 #### Get demo datasets
 curl -OL https://github.com/mercertim/Synx/releases/download/v0.1/ont_demo_data.fastq
-
 curl -OL https://github.com/mercertim/Synx/releases/download/v0.1/illumina_demo_data.bam
 
 #### Align to Synx sequence with minimap2 and sort and index bam
 minimap2 -ax map-ont -t 8 synx.fa ont_demo_data.fastq | samtools sort - > ont_demo_data_synx.bam
-
 samtools index ont_demo_data_synx.bam
 
 #### Get pileup stats per base for Synx genome for Ont and Illumina (starting with aligned bam)
 pysamstats --fasta synx.fa --type variation ont_demo_data_synx.bam > ont_demo_data_synx.bam.bed
-
 pysamstats --fasta synx.fa --type variation illumina_demo_data.bam > illumina_demo_data.bam.bed
  
 #### Collate pileup stats 
 python3 analyzePile.py ont_demo_data_synx.bam.bed > ont_demo_data_synx.bam.bed.tsv
-
 python3 analyzePile.py illumina_demo_data.bam.bed > illumina_demo_data.bam.bed.tsv
 
-The expected output for Illumina and ONT libraries can be found in the files test_ont_demo_data_synx.bam.bed.tsv and test_illumina_demo_data_synx.bam.bed.tsv
+The expected output for Illumina and ONT libraries can be found in the files test_ont_demo_data_synx.bam.bed.tsv and test_illumina_demo_data.bam.bed.tsv
+
+#### Calculate kmer alignment using Jellyfish (ONT library only)
+jellyfish count -m 31 -t 30 -s 100M -C ont_demo_data.fastq -o mer_counts.jf
+jellyfish query -s All_31mers.fasta mer_counts.jf > All_31mers_counts.tsv
+
+## Scripts for downstream analysis
+NOTE: Generalised scipts for downstream analysis will need to be customised depending on your sample genome. The pipeline is run as follows:
+
+1. Sample preprocessing to determine basewise errors in Synx sequences as per demo (BASH and python).
+
+2. Calculate kmer error rates for Synx genome using the Synx_kmer_errors_demo.R (R).
+
+3. Calculate quantitative accuracy using Synx_conu_analysis_demo.R script (R) and jellyfish results from above.
