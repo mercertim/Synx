@@ -19,19 +19,19 @@ pip install pysamstats (v1.1.2)
 ## Demo
 A sample Oxford nanopore dataset containing a Synx library is contained in the file ont_demo_data.fastq for demonstration. To run:
 
-# Clone repository
+#### Clone repository
 git clone https://github.com/mercertim/Synx.git
 cd Synx
 
-# Align to Synx sequence with minimap2 and sort and index bam
+#### Align to Synx sequence with minimap2 and sort and index bam
 minimap2 -ax map-ont -t 8 synx.fa ont_demo_data.fastq | samtools sort - > ont_demo_data_synx.bam
 samtools index ont_demo_data_synx.bam
 
-# Get pileup stats per base for Synx genome for Ont and Illumina (starting with aligned bam)
+#### Get pileup stats per base for Synx genome for Ont and Illumina (starting with aligned bam)
 pysamstats --fasta synx.fa --type variation ont_demo_data_synx.bam > ont_demo_data_synx.bam.bed
 pysamstats --fasta synx.fa --type variation illumina_demo_data.bam > illumina_demo_data.bam.bed
  
-# Collate pileup stats 
+#### Collate pileup stats 
 python3 analyzePile.py ont_demo_data_synx.bam.bed > ont_demo_data_synx.bam.bed.tsv
 python3 analyzePile.py illumina_demo_data.bam.bed > illumina_demo_data.bam.bed.tsv
 
