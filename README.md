@@ -19,9 +19,13 @@ pip install pysamstats (v1.1.2)
 ## Demo
 A sample Oxford nanopore dataset containing a Synx library is contained in the file ont_demo_data.fastq for demonstration. To run:
 
-#### Clone repository
+#### Clone repository scripts and reference files
 git clone https://github.com/mercertim/Synx.git
+
 cd Synx
+
+#### Get demo datasets
+
 
 #### Align to Synx sequence with minimap2 and sort and index bam
 minimap2 -ax map-ont -t 8 synx.fa ont_demo_data.fastq | samtools sort - > ont_demo_data_synx.bam
