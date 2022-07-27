@@ -28,24 +28,29 @@ cd Synx
 
 #### Get demo datasets
 curl -OL https://github.com/mercertim/Synx/releases/download/v0.1/ont_demo_data.fastq
+
 curl -OL https://github.com/mercertim/Synx/releases/download/v0.1/illumina_demo_data.bam
 
 #### Align to Synx sequence with minimap2 and sort and index bam
 minimap2 -ax map-ont -t 8 synx.fa ont_demo_data.fastq | samtools sort - > ont_demo_data_synx.bam
+
 samtools index ont_demo_data_synx.bam
 
 #### Get pileup stats per base for Synx genome for Ont and Illumina (starting with aligned bam)
 pysamstats --fasta synx.fa --type variation ont_demo_data_synx.bam > ont_demo_data_synx.bam.bed
+
 pysamstats --fasta synx.fa --type variation illumina_demo_data.bam > illumina_demo_data.bam.bed
  
 #### Collate pileup stats 
 python3 analyzePile.py ont_demo_data_synx.bam.bed > ont_demo_data_synx.bam.bed.tsv
+
 python3 analyzePile.py illumina_demo_data.bam.bed > illumina_demo_data.bam.bed.tsv
 
 The expected output for Illumina and ONT libraries can be found in the files test_ont_demo_data_synx.bam.bed.tsv and test_illumina_demo_data.bam.bed.tsv
 
 #### Calculate kmer alignment using Jellyfish (ONT library only)
 jellyfish count -m 31 -t 30 -s 100M -C ont_demo_data.fastq -o mer_counts.jf
+
 jellyfish query -s All_31mers.fasta mer_counts.jf > All_31mers_counts.tsv
 
 ## Scripts for downstream analysis
